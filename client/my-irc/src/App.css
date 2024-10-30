@@ -1,0 +1,58 @@
+.channel-list {
+  float: left;
+  background-color: rgb(253, 205, 213);
+  width: 30vw;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.chat-body {
+  float: right;
+  width: 60vw;
+  margin-right: 10vw;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.chat-footer {
+  bottom: 10vh;
+  position: absolute;
+  width: 50vw; 
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+.chat-footer input {
+  width: 100%;
+  height: 25px;
+  box-sizing: border-box;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+@media screen and (max-width: 600px) {
+  .channel-list {
+    display: none;
+  }
+
+  .chat-body {
+    float: none;
+    width: 100%;
+    margin-right: 0;
+  }
+
+  .chat-footer {
+    width: calc(100% - 20px); 
+    padding: 0 5px;
+  }
+}
+
+@media screen and (max-width: 300px) {
+  .chat-footer input {
+    width: 100%;
+  }
+}
