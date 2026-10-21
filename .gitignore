@@ -1,0 +1,27 @@
+
+# Dépendances frontend et backend
+node_modules/
+
+# Outils Python / environnements éventuels
+.venv/
+
+# Variables d'environnement et secrets
+.env
+.env.*
+!.env.example
+
+# React : fichiers générés
+/build
+/dist
+
+# Tests
+/coverage
+
+# Divers
+.DS_Store
+.vscode/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
