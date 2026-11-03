@@ -4,12 +4,20 @@ const http = require("http");
 const cors = require("cors");
 const { Server } = require("socket.io");
 
-app.use(cors());
+// Origines autorisées (front), séparées par des virgules dans FRONT_URL.
+// Ex : FRONT_URL=https://mon-front.vercel.app,http://localhost:3001
+// Pas de slash final.
+const ALLOWED_ORIGINS = (process.env.FRONT_URL || "http://localhost:3001")
+    .split(",")
+    .map((url) => url.trim().replace(/\/$/, ""))
+    .filter(Boolean);
+
+app.use(cors({ origin: ALLOWED_ORIGINS }));
 
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: "http://localhost:3001",
+        origin: ALLOWED_ORIGINS,
         methods: ["GET", "POST"],
     },
 });
@@ -22,8 +30,8 @@ const takenUsernames = new Map();     // pseudo en minuscules -> socket.id
 
 const MAX_CHANNEL_LENGTH = 30;
 
-app.get('/', (req, res) => {
-    res.send('<h1>Hello world</h1>');
+app.get("/", (req, res) => {
+    res.send("<h1>Hello world</h1>");
 });
 
 // Quitte le channel courant (présence + indicateur de saisie)
@@ -118,7 +126,7 @@ io.on("connection", (socket) => {
 
     socket.on("send_message", (data) => {
         // il faut être dans le channel pour y écrire
-        if (data.room && data.message && socket.username && socket.rooms.has(data.room) && channels[data.room]) {
+        if (data && data.room && data.message && socket.username && socket.rooms.has(data.room) && channels[data.room]) {
             const messageData = {
                 room: data.room,
                 author: socket.username,
@@ -133,7 +141,7 @@ io.on("connection", (socket) => {
     });
 
     // Indicateur "est en train d'écrire"
-    socket.on("typing", ({ channel, isTyping }) => {
+    socket.on("typing", ({ channel, isTyping } = {}) => {
         if (!socket.username || !socket.rooms.has(channel)) return;
 
         socket.to(channel).emit("user_typing", {
@@ -154,9 +162,9 @@ io.on("connection", (socket) => {
     });
 });
 
-
 const PORT = process.env.PORT || 3000;
 
 server.listen(PORT, "0.0.0.0", () => {
     console.log(`Serveur IRC démarré sur le port ${PORT}`);
+    console.log(`Origines autorisées : ${ALLOWED_ORIGINS.join(", ")}`);
 });
