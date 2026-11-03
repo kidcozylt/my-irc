@@ -4,9 +4,6 @@ const http = require("http");
 const cors = require("cors");
 const { Server } = require("socket.io");
 
-// Origines autorisées (front), séparées par des virgules dans FRONT_URL.
-// Ex : FRONT_URL=https://mon-front.vercel.app,http://localhost:3001
-// Pas de slash final.
 const ALLOWED_ORIGINS = (process.env.FRONT_URL || "http://localhost:3001")
     .split(",")
     .map((url) => url.trim().replace(/\/$/, ""))
@@ -135,8 +132,7 @@ io.on("connection", (socket) => {
             };
 
             channels[data.room].push(messageData);
-            // à tout le monde sauf l'expéditeur (il ajoute son message localement)
-            socket.to(data.room).emit("receive_msg", messageData);
+            io.to(data.room).emit("receive_msg", messageData);
         }
     });
 
